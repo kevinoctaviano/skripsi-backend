@@ -24,7 +24,8 @@ class App extends BaseConfig
      *
      * @var string
      */
-    public $baseURL = 'http://192.168.1.11:8080/skripsi-kevin/public';
+    // public $baseURL = 'http://192.168.1.11:8080/skripsi-kevin/public';
+    public $baseURL = 'https://skripsibackend.herokuapp.com/';
 
     /**
      * --------------------------------------------------------------------------
