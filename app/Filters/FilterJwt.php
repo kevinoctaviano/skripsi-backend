@@ -23,7 +23,7 @@ class FilterJwt implements FilterInterface
                 validateJWT($encodedToken);
             } catch (\Throwable $th) {
                 return Services::response()->setJSON([
-                    "message" => 'Invalid token!'
+                    "message" => 'Token Expired! Please login.'
                 ])->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
             }
             return $request;

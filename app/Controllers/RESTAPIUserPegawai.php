@@ -6,7 +6,7 @@ use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\API\ResponseTrait;
 use App\Models\PegawaiModel;
 
-class RESTAPIUserPegawai extends ResourceController
+class Restapiuserpegawai extends ResourceController
 {
     /**
      * Return an array of resource objects, themselves in array format
@@ -32,7 +32,15 @@ class RESTAPIUserPegawai extends ResourceController
      */
     public function show($id = null)
     {
-        //
+        $data = $this->pegawai->getPegawaiByID($id);
+        if ($data) {
+            $response = [
+                'pegawai' => $data
+            ];
+            return $this->respond($response, 200);
+        } else {
+            return $this->failNotFound("Data Pegawai dengan id $id tidak ditemukan!");
+        }
     }
 
     /**
@@ -72,17 +80,21 @@ class RESTAPIUserPegawai extends ResourceController
      */
     public function update($id = null)
     {
-        $data = $this->request->getRawInput();
-        $password_hash = password_hash($data['password'], PASSWORD_BCRYPT);
+        $password_lama = $this->request->getVar('password_lama');
+        $password = $this->request->getVar('password');
+        $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
-        $databaru = ['password' => $password_hash];
+        $databaru = [
+            'password'  => $password_hash,
+            'isUpdate'  => 1
+        ];
 
         $isExist = $this->pegawai->where('id', $id)->findAll();
         if (!$isExist) {
             return $this->failNotFound("Data Absen dengan id $id tidak ditemukan!");
         }
 
-        if (!password_verify($data['password_lama'], $isExist[0]['password'])) {
+        if (!password_verify($password_lama, $isExist[0]['password'])) {
             $response = 'Password lama tidak sesuai!';
             return $this->fail($response);
         }

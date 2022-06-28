@@ -2,11 +2,11 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
+use CodeIgniter\RESTful\ResourceController;
 use App\Models\PegawaiModel;
 use CodeIgniter\API\ResponseTrait;
 
-class AuthPegawai extends BaseController
+class AuthPegawai extends ResourceController
 {
     use ResponseTrait;
     public function index()
@@ -38,12 +38,11 @@ class AuthPegawai extends BaseController
 
         $data = $model->getDataPegawai($email);
 
-        if (!password_verify($password, $data[0]['password'])) {
-            return $this->fail("Password tidak sesuai!");
-        }
-
         if (!$data) {
             return $this->fail("Email tidak ditemukan!");
+        }
+        if (!password_verify($password, $data[0]['password'])) {
+            return $this->fail("Password tidak sesuai!");
         }
 
         helper("jwt");

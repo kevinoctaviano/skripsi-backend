@@ -80,4 +80,14 @@ class PegawaiModel extends Model
         $query = $builder->get()->getResultArray();
         return $query;
     }
+
+    public function getPegawaiByID($id = null)
+    {
+        $builder = $this->db->table('pegawai');
+        $builder->join('divisi', 'divisi.divisi_id = pegawai.division');
+        $builder->where('id', $id);
+        $builder->select('*');
+        $query = $builder->get()->getResultArray();
+        return $query;
+    }
 }

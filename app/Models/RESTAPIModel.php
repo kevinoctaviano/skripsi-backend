@@ -14,7 +14,7 @@ class RESTAPIModel extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['waktu', 'karyawan', 'absen_masuk', 'absen_keluar'];
+    protected $allowedFields    = ['id', 'waktu', 'karyawan', 'absen_masuk', 'absen_keluar'];
 
     protected $validationRules = [
         'karyawan' => 'required'
@@ -25,4 +25,39 @@ class RESTAPIModel extends Model
             'required' => 'Masukkan ID karyawan!'
         ]
     ];
+
+    public function checkAbsen($karyawan)
+    {
+        $builder = $this->db->table('absensi');
+        $builder->where('karyawan', $karyawan);
+        $builder->select('waktu');
+        $query = $builder->get()->getLastRow('array');
+        return $query;
+    }
+
+    public function checkAbsenUpdate($id)
+    {
+        $builder = $this->db->table('absensi');
+        $builder->where('id', $id);
+        $builder->select('waktu');
+        $query = $builder->get()->getLastRow('array');
+        return $query;
+    }
+
+    public function checkAbsenKeluar($id)
+    {
+        $builder = $this->db->table('absensi');
+        $builder->where('id', $id);
+        $builder->select('*');
+        $query = $builder->get()->getLastRow('array');
+        return $query;
+    }
+
+    public function updateAbsenKeluar($data, $id)
+    {
+        $builder = $this->db->table('absensi');
+        $builder->where('id', $id);
+        $query = $builder->update($data);
+        return $query;
+    }
 }
