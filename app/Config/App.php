@@ -24,7 +24,7 @@ class App extends BaseConfig
      *
      * @var string
      */
-    public $baseURL = 'http://192.168.1.12:8080/skripsi-backend/public/';
+    public $baseURL = 'http://192.168.1.17:8080/skripsi-backend/public/';
 
     /**
      * --------------------------------------------------------------------------

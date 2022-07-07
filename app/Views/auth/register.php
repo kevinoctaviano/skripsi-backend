@@ -1,62 +1,67 @@
 <?= $this->extend('auth/layout') ?>
 
 <?= $this->section('content') ?>
-<div class="card o-hidden border-0 shadow-lg my-5">
-    <div class="card-body p-0">
-        <div class="row">
-            <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
-            <div class="col-lg-7">
-                <div class="p-5">
-                    <div class="text-center">
-                        <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
-                    </div>
-                    <?= view('Myth\Auth\Views\_message_block') ?>
-                    <form class="user" action="<?= route_to('register') ?>" method="post">
-                        <?= csrf_field() ?>
-                        <div class="form-group row">
-                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                <label for="email">Firstname</label>
-                                <input type="text" class="form-control form-control-user <?php if(session('errors.firstname')) : ?>is-invalid<?php endif ?>" id="exampleFirstName"
-                                    placeholder="First Name" name="firstname">
-                            </div>
-                            <div class="col-sm-6">
-                                <label for="email">Lastname</label>
-                                <input type="text" class="form-control form-control-user <?php if(session('errors.lastname')) : ?>is-invalid<?php endif ?>" id="exampleLastName"
-                                    placeholder="Last Name" name="lastname">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="email"><?=lang('Auth.email')?></label>
-                            <input type="email" class="form-control form-control-user <?php if(session('errors.email')) : ?>is-invalid<?php endif ?>" id="exampleInputEmail"
-                                placeholder="Email Address" value="<?= old('email') ?>" name="email">
-                        </div>
-                        <div class="form-group">
-                            <label for="username"><?=lang('Auth.username')?></label>
-                            <input type="text" class="form-control form-control-user <?php if(session('errors.username')) : ?>is-invalid<?php endif ?>" name="username" placeholder="<?=lang('Auth.username')?>" value="<?= old('username') ?>">
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-6 mb-3 mb-sm-0">
-                                <label for="password"><?=lang('Auth.password')?></label>
-                                <input type="password" class="form-control form-control-user <?php if(session('errors.password')) : ?>is-invalid<?php endif ?>" autocomplete="off"
-                                    id="exampleInputPassword" placeholder="<?=lang('Auth.password')?>" name="password">
-                            </div>
-                            <div class="col-sm-6">
-                                <label for="pass_confirm"><?=lang('Auth.repeatPassword')?></label>
-                                <input type="password" class="form-control form-control-user <?php if(session('errors.password')) : ?>is-invalid<?php endif ?>" autocomplete="off"
-                                    id="exampleRepeatPassword" placeholder="<?=lang('Auth.repeatPassword')?>" name="pass_confirm">
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-user btn-block">
-                            <?=lang('Auth.register')?>
-                        </button>
-                    </form>
-                    <hr>
-                    <div class="text-center">
-                        <a class="small" href="<?= route_to('login') ?>">Already have an account? Login!</a>
-                    </div>
+<div class="authentication-wrapper authentication-basic container-p-y">
+    <div class="authentication-inner">
+        <!-- Register Card -->
+        <div class="card">
+            <div class="card-body">
+                <!-- Logo -->
+                <div class="app-brand justify-content-center">
+                    <a href="<?= base_url('login') ?>" class="app-brand-link gap-2">
+                        <span class="app-brand-logo demo">
+                            <img src="<?= base_url() ?>/img/logo.png" width="80px" alt="">
+                        </span>
+                        <span class="app-brand-text demo text-body fw-bolder">Serve Me!</span>
+                    </a>
                 </div>
+                <!-- /Logo -->
+                <h4 class="mb-2">Register your account here! 🚀</h4>
+                <?= view('Myth\Auth\Views\_message_block') ?>
+                <form id="formAuthentication" class="mb-3" action="<?= route_to('register') ?>" method="POST">
+                    <?= csrf_field() ?>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control <?php if (session('errors.username')) : ?>is-invalid<?php endif ?>" id="username" name="username" placeholder="Enter your username" autofocus />
+                    </div>
+                    <div class="mb-3">
+                        <label for="firstname" class="form-label">Firstname</label>
+                        <input type="text" class="form-control <?php if (session('errors.firstname')) : ?>is-invalid<?php endif ?>" id="firstname" name="firstname" placeholder="Enter your firstname" autofocus />
+                    </div>
+                    <div class="mb-3">
+                        <label for="lastname" class="form-label">Lastname</label>
+                        <input type="text" class="form-control <?php if (session('errors.lastname')) : ?>is-invalid<?php endif ?>" id="lastname" name="lastname" placeholder="Enter your lastname" autofocus />
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control <?php if (session('errors.email')) : ?>is-invalid<?php endif ?>" id="email" name="email" placeholder="Enter your email" value="<?= old('email') ?>" />
+                    </div>
+                    <div class="mb-3 form-password-toggle">
+                        <label class="form-label" for="password"><?= lang('Auth.password') ?></label>
+                        <div class="input-group input-group-merge">
+                            <input type="password" id="password" class="form-control <?php if (session('errors.password')) : ?>is-invalid<?php endif ?>" name="password" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" autocomplete="off" />
+                            <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                        </div>
+                    </div>
+                    <div class="mb-3 form-password-toggle">
+                        <label class="form-label" for="pass_confirm"><?= lang('Auth.repeatPassword') ?></label>
+                        <div class="input-group input-group-merge">
+                            <input type="password" id="pass_confirm" class="form-control <?php if (session('errors.password')) : ?>is-invalid<?php endif ?>" name="pass_confirm" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" autocomplete="off" />
+                            <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary d-grid w-100">Sign up</button>
+                </form>
+
+                <p class="text-center">
+                    <span>Already have an account?</span>
+                    <a href="<?= base_url('login') ?>">
+                        <span>Sign in instead</span>
+                    </a>
+                </p>
             </div>
         </div>
+        <!-- Register Card -->
     </div>
 </div>
 <?= $this->endsection() ?>
