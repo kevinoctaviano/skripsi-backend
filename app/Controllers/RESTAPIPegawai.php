@@ -4,7 +4,7 @@ namespace App\Controllers;
 
 use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\API\ResponseTrait;
-use App\Models\RESTAPIModel;
+use App\Models\Restapimodel;
 
 class Restapipegawai extends ResourceController
 {
@@ -17,7 +17,7 @@ class Restapipegawai extends ResourceController
     private $restapi;
     public function __construct()
     {
-        $this->restapi = new RESTAPIModel();
+        $this->restapi = new Restapimodel();
     }
     public function index()
     {
@@ -80,7 +80,7 @@ class Restapipegawai extends ResourceController
         $waktuAbsen = date_format($date, 'Y-m-d');
         $waktuSekarang = date('Y-m-d');
 
-        if ($getWaktuKeluar['absen_keluar'] === null) {
+        if (($getWaktuKeluar['absen_keluar'] === null) && ($waktuAbsen === $waktuSekarang)) {
             $data['absen_keluar'] = date('Y-m-d H:i:s');
             $data['id'] = $id;
             $isExist = $this->restapi->where('id', $id)->findAll();

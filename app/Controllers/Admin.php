@@ -5,6 +5,8 @@ namespace App\Controllers;
 use App\Models\AdminModel;
 use App\Models\AbsensiModel;
 use Myth\Auth\Password;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class Admin extends BaseController
 {
@@ -14,6 +16,7 @@ class Admin extends BaseController
     {
         $this->admin = new AdminModel();
         $this->absensi = new AbsensiModel();
+        helper('form');
     }
     public function index()
     {
@@ -177,5 +180,92 @@ class Admin extends BaseController
         $this->admin->updateDataAdmin($id, $data);
         session()->setFlashdata('success', 'Berhasil mengubah data admin baru!');
         return redirect()->to('/data-admin');
+    }
+
+    public function getHour($date)
+    {
+        $tanggal = date_create($date);
+        return date_format($tanggal, 'H:i:s');
+    }
+
+    public function getDate($date)
+    {
+        $tanggal = date_create($date);
+        return date_format($tanggal, 'd-m-Y');
+    }
+
+    public function getKeterangan($masuk, $keluar)
+    {
+        $datetime1 = strtotime($keluar);
+        $datetime2 = strtotime($masuk);
+        $hour = $datetime1 - $datetime2;
+        $res = $hour / 3600;
+        if ($res > 8 && $keluar != NULL) {
+            return "Lembur";
+        } elseif ($res <= 8 && $keluar != NULL) {
+            return "Tidak Lembur";
+        } else {
+            return "Belum Absen Keluar";
+        }
+    }
+
+    public function exportExcel()
+    {
+        $btnExcel = $this->request->getPost('btnExcel');
+        $laporan = $this->absensi->getDataAbsensi();
+
+        // dd($laporan);
+
+        if (isset($btnExcel)) {
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            $sheet->setCellValue('A1', 'DATA ABSENSI');
+            $sheet->mergeCells('A1:E1');
+            $sheet->getStyle('A1')->getFont()->setBold(true);
+
+            $sheet->setCellValue('A3', 'No');
+            $sheet->setCellValue('B3', 'Waktu');
+            $sheet->setCellValue('C3', 'Nama Pegawai');
+            $sheet->setCellValue('D3', 'Divisi');
+            $sheet->setCellValue('E3', 'Absen Masuk');
+            $sheet->setCellValue('F3', 'Absen Keluar');
+            $sheet->setCellValue('G3', 'Keterangan');
+
+            $no = 1;
+            $numRows = 4;
+
+            foreach ($laporan as $key) {
+
+                $absen_masuk = $this->getHour($key['absen_masuk']);
+                $absen_keluar = $this->getHour($key['absen_keluar']);
+                $tanggal = $this->getDate($key['waktu']);
+
+                $keterangan = $this->getKeterangan($key['absen_masuk'], $key['absen_keluar']);
+
+                $namaLengkap = $key['firstname'] . ' ' . $key['lastname'];
+                $sheet->setCellValue('A' . $numRows, $no);
+                $sheet->setCellValue('B' . $numRows, $tanggal);
+                $sheet->setCellValue('C' . $numRows, $namaLengkap);
+                $sheet->setCellValue('D' . $numRows, $key['divisi_name']);
+                $sheet->setCellValue('E' . $numRows, $absen_masuk);
+                $sheet->setCellValue('F' . $numRows, $absen_keluar);
+                $sheet->setCellValue('G' . $numRows, $keterangan);
+
+                $no++;
+                $numRows++;
+            }
+            $sheet->getDefaultRowDimension()->setRowHeight(-1);
+            $sheet->getPageSetup()->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_LANDSCAPE);
+            $sheet->setTitle('Laporan Absensi');
+
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename = "Laporan Absensi.xlsx"');
+            header('Cache-Control:max-age=0');
+
+            $writer = new Xlsx($spreadsheet);
+            $writer->save('php://output');
+            die();
+        }
     }
 }

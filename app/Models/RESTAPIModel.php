@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class RESTAPIModel extends Model
+class Restapimodel extends Model
 {
     protected $DBGroup          = 'default';
     protected $table            = 'absensi';

@@ -64,6 +64,8 @@ $routes->post('/profile/(:num)', 'Profile::updateProfile/$1');
 $routes->get('/ubah-password', 'Profile::updatePassword');
 $routes->post('/password-changed/(:num)', 'Profile::updatePasswordForm/$1');
 
+$routes->add('/export-excel', 'Admin::exportExcel');
+
 // REST API
 $routes->resource('restapipegawai');
 $routes->post('/authentikasi', 'AuthPegawai::index');
